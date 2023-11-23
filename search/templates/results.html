@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <title>Image Similarity Search</title>
+    <style>
+      .navbar {
+        margin-bottom: 20px;
+      }
+
+      .image-container {
+        height: calc(100vh - 56px - 20px * 2);
+        margin-bottom: 20px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+    </style>
+  </head>
+  <body class="bg-secondary">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="./">Image Similarity Search</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div
+        id="carouselExampleIndicators"
+        class="carousel slide"
+        data-bs-ride="carousel"
+        data-bs-interval="false"
+      >
+        <div class="carousel-indicators">
+          {% for base64image in results %}
+          <button
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="{{loop.index - 1}}"
+            class="{% if loop.index == 1 %} active {% endif %}"
+            aria-current="true"
+            aria-label="Slide {{loop.index}}"
+          ></button>
+          {% endfor %}
+        </div>
+        <div class="carousel-inner">
+          {% for base64image in results %}
+          <div
+            class="carousel-item image-container {% if loop.index == 1 %} active {% endif %}"
+            style="background-image: url('data:image/png;base64,{{base64image}}')"
+          >
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Similarity Search Result #{{loop.index}}</h5>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carouselExampleIndicators"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carouselExampleIndicators"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
