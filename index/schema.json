@@ -1,0 +1,27 @@
+{
+  "classes": [
+    {
+      "class": "Image",
+      "description": "Images of various things",
+      "moduleConfig": {
+        "img2vec-neural": {
+          "imageFields": ["image"]
+        }
+      },
+      "vectorIndexType": "hnsw",
+      "vectorizer": "img2vec-neural",
+      "properties": [
+        {
+          "name": "image",
+          "dataType": ["blob"],
+          "description": "image"
+        },
+        {
+          "name": "identifier",
+          "dataType": ["string"],
+          "description": "an image id"
+        }
+      ]
+    }
+  ]
+}
