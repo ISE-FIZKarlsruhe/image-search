@@ -16,7 +16,7 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
 
-def fetch_similar_images(image: bytes, k: int = 1) -> Any:
+def fetch_similar_images(image: bytes, k: int = 1) -> List[str]:
     base64_image = base64.b64encode(image).decode()
 
     sourceImage = {"image": base64_image}
@@ -29,13 +29,11 @@ def fetch_similar_images(image: bytes, k: int = 1) -> Any:
     )
 
     images = weaviate_results["data"]["Get"]["Image"]
-    
+
     base64_images = []
     for image in images:
         base64_data = image["image"]
         base64_images.append(base64_data)
-    
-    print(type(base64_images))
 
     return base64_images
 
@@ -46,17 +44,12 @@ def read_root(request: Request):
 
 
 @app.post("/search")
-async def search_similar_images(image: UploadFile, k: Annotated[int, Form()],  request: Request):
+async def search_similar_images(
+    image: UploadFile, k: Annotated[int, Form()], request: Request
+):
     content = await image.read()
 
     similar_images = fetch_similar_images(content, k)
     return templates.TemplateResponse(
-        "results.html", {
-            "request": request,
-            "results": similar_images
-        }
+        "results.html", {"request": request, "results": similar_images}
     )
-    # uploaded_file = Image.open(request.files['filepath'].stream)
-    # buffer = BytesIO()
-    # uploaded_file.save(buffer, format="JPEG")
-    # img_str = base64.b64encode(buffer.getvalue()).decode()
