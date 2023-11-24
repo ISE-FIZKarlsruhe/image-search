@@ -3,7 +3,7 @@
 import base64
 from io import BytesIO
 import json
-from fastapi import FastAPI, Response, Request, Form, File, UploadFile
+from fastapi import FastAPI, BackgroundTasks, Request, Form, File, UploadFile
 from fastapi.templating import Jinja2Templates
 from typing import List, Annotated, Union, Any
 import weaviate
@@ -34,23 +34,12 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
 
-@app.get("/")
-def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
-
-
-@app.post("/index")
-async def index_images(images: UploadFile, request: Request):
-    content = await images.read()
-    zip_archive = ZipFile(BytesIO(content))
-
+def index_images(zip_archive):
     with client.batch as batch:
-
         for zipinfo in zip_archive.filelist:
             file_name = zipinfo.filename
 
             if file_name[-4:] not in [".png", ".jpg", "jpeg"]:
-                print("Unsupported file type:", file_name)
                 continue
 
             image = zip_archive.read(file_name)
@@ -60,5 +49,19 @@ async def index_images(images: UploadFile, request: Request):
 
             batch.add_data_object(data, "Image")
 
+
+@app.get("/")
+def read_root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
+@app.post("/index")
+async def run_indexing(
+    images: UploadFile, background_tasks: BackgroundTasks, request: Request
+):
+    content = await images.read()
+    zip_archive = ZipFile(BytesIO(content))
+
+    background_tasks.add_task(index_images, zip_archive)
 
     return 200
