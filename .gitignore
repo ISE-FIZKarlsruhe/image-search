@@ -3,6 +3,8 @@ data/
 logs/
 tmp/
 
+.weaviatedata
+
 resources/
 
 *.txt
