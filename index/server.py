@@ -52,7 +52,9 @@ def index_images(zip_archive):
 
 @app.get("/")
 def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(
+        "index.html", {"request": request, "show_success": False}
+    )
 
 
 @app.post("/index")
@@ -64,4 +66,7 @@ async def run_indexing(
 
     background_tasks.add_task(index_images, zip_archive)
 
-    return 200
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request, "show_success": True, "file_name": images.filename},
+    )

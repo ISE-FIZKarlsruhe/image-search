@@ -55,6 +55,14 @@
           </button>
         </div>
       </form>
+
+      {% if show_success == True %}
+
+      <div class="alert alert-primary" role="alert" style="margin-top: 15px">
+        The server received "{{file_name}}" and is processing it now 👍
+      </div>
+
+      {% endif %}
     </div>
   </body>
 </html>
