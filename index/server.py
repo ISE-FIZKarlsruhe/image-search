@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
 
 import base64
-from io import BytesIO
-import json
+from dotenv import load_dotenv
 from fastapi import FastAPI, BackgroundTasks, Request, Form, File, UploadFile
 from fastapi.templating import Jinja2Templates
+from io import BytesIO
+import json
+import os
 from typing import List, Annotated, Union, Any
 import weaviate
 from zipfile import ZipFile
 
-client = weaviate.Client(url="http://localhost:8080")
+load_dotenv()
+
+WEAVIATE_URL = os.getenv("WEAVIATE_URL")
+
+client = weaviate.Client(url=WEAVIATE_URL)
 client.batch.configure(
     batch_size=10,
     dynamic=True,

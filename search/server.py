@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 
 import base64
+from dotenv import load_dotenv
 from fastapi import FastAPI, Response, Request, Form, File, UploadFile
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
+import os
 from typing import List, Annotated, Union, Any
 import weaviate
 
-client = weaviate.Client(url="http://localhost:8080")
+load_dotenv()
+
+WEAVIATE_URL = os.getenv("WEAVIATE_URL")
+
+client = weaviate.Client(url=WEAVIATE_URL)
 
 if not client.is_ready():
     raise ConnectionError("Connection to weaviate cluster failed.")

@@ -2,13 +2,17 @@
 
 import base64
 import json
+from dotenv import load_dotenv
 import os
 from tqdm import tqdm
 import weaviate
 
-SEED_DATA_DIR = "data"
+load_dotenv()
 
-client = weaviate.Client(url="http://localhost:8080")
+SEED_DATA_DIR = os.getenv("SEED_DATA_DIR")
+WEAVIATE_URL = os.getenv("WEAVIATE_URL")
+
+client = weaviate.Client(url=WEAVIATE_URL)
 
 schema = None
 with open("schema.json") as json_file:
