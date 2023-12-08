@@ -24,15 +24,15 @@ with open(IIIF_PATH) as iiif_link_file:
 
         manifest_links.append(link)
 
-decode_error_count = 0
+request_error_count = 0
 
 image_base_links = []
 for manifest_link in tqdm(manifest_links):
     try:
         response = requests.get(url=manifest_link)
         data = response.json()
-    except json.decoder.JSONDecodeError as e:
-        decode_error_count += 1
+    except Exception as e:
+        request_error_count += 1
         continue
 
     try:
@@ -50,7 +50,7 @@ for manifest_link in tqdm(manifest_links):
         pass
 
 print(
-    f"Failed to decode {decode_error_count} manifest links from {len(manifest_links)} provided manifest links ({100 * round(decode_error_count / len(manifest_links), 2)} %)"
+    f"Failed to decode {request_error_count} manifest links from {len(manifest_links)} provided manifest links ({100 * round(request_error_count / len(manifest_links), 2)} %)"
 )
 
 image_links = []
