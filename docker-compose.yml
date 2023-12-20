@@ -47,6 +47,7 @@ services:
     restart: on-failure:0
     environment:
       IMAGE_INFERENCE_API: 'http://interference-model:8080'
+      # CLIP_INFERENCE_API: 'http://interference-model:8080'
       QUERY_DEFAULTS_LIMIT: 25
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
       PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
