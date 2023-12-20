@@ -12,6 +12,8 @@ services:
       - 8001:8001
     depends_on:
       - weaviate
+    env_file:
+      - ./index/.env
     environment:
       WEAVIATE_URL: 'http://weaviate:8080'
     entrypoint: python3 index_from_http.py
