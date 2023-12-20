@@ -16,7 +16,10 @@ services:
       - ./index/.env
     environment:
       WEAVIATE_URL: 'http://weaviate:8080'
+      SEED_DATA_DIR: '/index_data'
     entrypoint: python3 index_from_directory.py
+    volumes:
+      - ./.data:/index_data
   
   weaviate:
     command:
@@ -32,6 +35,7 @@ services:
     restart: on-failure:0
     environment:
       IMAGE_INFERENCE_API: 'http://interference-model:8080'
+      # CLIP_INFERENCE_API: 'http://interference-model:8080'
       QUERY_DEFAULTS_LIMIT: 25
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
       PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
