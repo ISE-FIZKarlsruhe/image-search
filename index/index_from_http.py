@@ -45,9 +45,6 @@ client.batch.configure(
 
 with client.batch as batch:
     for i, image_id in tqdm(enumerate(image_ids)):
-        if i > 5000:
-            break
-
         image_link = image_id
 
         if SEED_DATA_BASE_URL is not None:

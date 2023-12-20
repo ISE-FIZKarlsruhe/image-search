@@ -36,9 +36,6 @@ client.batch.configure(
 
 with client.batch as batch:
     for i, file_name in tqdm(enumerate(os.listdir(SEED_DATA_DIR))):
-        if i > 5000:
-            break
-
         if file_name[-4:] not in [".png", ".jpg", "jpeg"]:
             print("Unsupported file type:", file_name)
             continue
