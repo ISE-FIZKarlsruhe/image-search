@@ -66,6 +66,13 @@ def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
+@app.get("/index-size")
+def get_index_size():
+    weaviate_response = client.query.aggregate("Image").with_meta_count().do()
+    index_size = weaviate_response["data"]["Aggregate"]["Image"][0]["meta"]["count"]
+    return {"index-size": index_size}
+
+
 @app.post("/search")
 async def search_similar_images(
     image: UploadFile, k: Annotated[int, Form()], request: Request
