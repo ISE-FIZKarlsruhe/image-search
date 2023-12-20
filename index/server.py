@@ -7,30 +7,15 @@ from fastapi.templating import Jinja2Templates
 from io import BytesIO
 import json
 import os
-from time import sleep
 from typing import List, Annotated, Union, Any
 import weaviate
 from zipfile import ZipFile
 
+from utils.weaviate_ import initiate_weaviate_connection
+
 load_dotenv()
 
 WEAVIATE_URL = os.getenv("WEAVIATE_URL")
-
-
-def initiate_weaviate_connection(url: str, retries: int = 10) -> weaviate.Client:
-    try:
-        client = weaviate.Client(url=WEAVIATE_URL)
-        return client
-    except weaviate.exceptions.WeaviateStartUpError as e:
-        print("Connecting to weaviate server failed.")
-
-        if retries == 0:
-            print("Retries exceeded. Shutting down script!")
-            raise ConnectionError("Connection to weaviate server failed.")
-
-        print(f"Retrying in 5 seconds... ({retries - 1} retries left)\n")
-        sleep(5)
-        return initiate_weaviate_connection(url, retries=retries - 1)
 
 
 client = initiate_weaviate_connection(url=WEAVIATE_URL)

@@ -9,6 +9,9 @@ import requests
 from tqdm import tqdm
 import weaviate
 
+from utils.weaviate_ import initiate_weaviate_connection
+
+
 load_dotenv()
 
 SEED_DATA_URL = os.getenv("SEED_DATA_LIST_URL")
@@ -21,7 +24,7 @@ directory_listing_html = response.text
 matches = re.findall(r" href=\".*\"", directory_listing_html)
 image_ids = [match[7:-1] for match in matches]
 
-client = weaviate.Client(url=WEAVIATE_URL)
+client = initiate_weaviate_connection(url=WEAVIATE_URL)
 
 schema = None
 with open("schema.json") as json_file:
@@ -42,6 +45,9 @@ client.batch.configure(
 
 with client.batch as batch:
     for i, image_id in tqdm(enumerate(image_ids)):
+        if i > 5000:
+            break
+
         image_link = image_id
 
         if SEED_DATA_BASE_URL is not None:
@@ -55,7 +61,7 @@ with client.batch as batch:
                 continue
 
             image = response.content
-            base64_image = base64.b64encode(image)
+            base64_image = base64.b64encode(image).decode()
 
             data = {"image": base64_image, "identifier": image_id}
 

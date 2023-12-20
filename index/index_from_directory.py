@@ -7,12 +7,15 @@ import os
 from tqdm import tqdm
 import weaviate
 
+from utils.weaviate_ import initiate_weaviate_connection
+
+
 load_dotenv()
 
 SEED_DATA_DIR = os.getenv("SEED_DATA_DIR")
 WEAVIATE_URL = os.getenv("WEAVIATE_URL")
 
-client = weaviate.Client(url=WEAVIATE_URL)
+client = initiate_weaviate_connection(url=WEAVIATE_URL)
 
 schema = None
 with open("schema.json") as json_file:
@@ -33,6 +36,9 @@ client.batch.configure(
 
 with client.batch as batch:
     for i, file_name in tqdm(enumerate(os.listdir(SEED_DATA_DIR))):
+        if i > 5000:
+            break
+
         if file_name[-4:] not in [".png", ".jpg", "jpeg"]:
             print("Unsupported file type:", file_name)
             continue
