@@ -28,7 +28,9 @@ SEED_DATA_DIR = os.getenv("SEED_DATA_DIR")
 WEAVIATE_URL = os.getenv("WEAVIATE_URL")
 SUBJECT_DICT_TARGET_PATH = os.getenv("SUBJECT_DICT_TARGET_PATH")
 
-subject_mapping: Dict = json.load(open(SUBJECT_DICT_TARGET_PATH))
+subject_mapping: Dict = None
+with open(SUBJECT_DICT_TARGET_PATH) as subject_mapping_file:
+    subject_mapping = json.load(subject_mapping_file)
 
 client = initiate_weaviate_connection(url=WEAVIATE_URL)
 
