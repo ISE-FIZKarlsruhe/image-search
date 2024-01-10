@@ -39,7 +39,7 @@
         data-bs-interval="false"
       >
         <div class="carousel-indicators">
-          {% for base64image in results %}
+          {% for (base64image, subject) in results %}
           <button
             type="button"
             data-bs-target="#carouselExampleIndicators"
@@ -51,13 +51,13 @@
           {% endfor %}
         </div>
         <div class="carousel-inner">
-          {% for base64image in results %}
+          {% for (base64image, subject) in results %}
           <div
             class="carousel-item image-container {% if loop.index == 1 %} active {% endif %}"
             style="background-image: url('data:image/png;base64,{{base64image}}')"
           >
             <div class="carousel-caption d-none d-md-block">
-              <h5>Similarity Search Result #{{loop.index}}</h5>
+              <h5>Similarity Search Result #{{loop.index}}: {{subject}}</h5>
             </div>
           </div>
           {% endfor %}

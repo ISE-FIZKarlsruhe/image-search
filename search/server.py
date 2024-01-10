@@ -6,7 +6,7 @@ from fastapi import FastAPI, Response, Request, Form, File, UploadFile
 from fastapi.templating import Jinja2Templates
 import os
 from time import sleep
-from typing import List, Annotated, Union, Any
+from typing import List, Annotated, Union, Any, Tuple
 import weaviate
 
 load_dotenv()
@@ -39,13 +39,13 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
 
-def fetch_similar_images(image: bytes, k: int = 1) -> List[str]:
+def fetch_results(image: bytes, k: int = 1) -> List[Tuple[str, str]]:
     base64_image = base64.b64encode(image).decode()
 
     sourceImage = {"image": base64_image}
 
     weaviate_results = (
-        client.query.get("Image", ["image", "identifier"])
+        client.query.get("Image", ["image", "subject", "identifier"])
         .with_near_image(sourceImage, encode=False)
         .with_limit(k)
         .do()
@@ -53,12 +53,14 @@ def fetch_similar_images(image: bytes, k: int = 1) -> List[str]:
 
     images = weaviate_results["data"]["Get"]["Image"]
 
-    base64_images = []
+    results = []
     for image in images:
         base64_data = image["image"]
-        base64_images.append(base64_data)
+        subject = image["subject"]
 
-    return base64_images
+        results.append((base64_data, subject))
+
+    return results
 
 
 @app.get("/")
@@ -79,7 +81,7 @@ async def search_similar_images(
 ):
     content = await image.read()
 
-    similar_images = fetch_similar_images(content, k)
+    results = fetch_results(content, k)
     return templates.TemplateResponse(
-        "results.html", {"request": request, "results": similar_images}
+        "results.html", {"request": request, "results": results}
     )

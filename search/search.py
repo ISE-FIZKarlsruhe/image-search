@@ -20,7 +20,7 @@ with open(COMPARISON_IMAGE_PATH, "rb") as image_file:
     sourceImage = {"image": base64_image}
 
     weaviate_results = (
-        client.query.get("Image", ["image", "identifier"])
+        client.query.get("Image", ["image", "subject", "identifier"])
         .with_near_image(sourceImage, encode=False)
         .with_limit(2)
         .do()
