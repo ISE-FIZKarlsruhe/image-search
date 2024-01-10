@@ -1,19 +1,34 @@
 #!/usr/bin/env python3
 
 import base64
-import json
 from dotenv import load_dotenv
+import json
 import os
 from tqdm import tqdm
+from typing import Dict
 import weaviate
 
 from utils.weaviate_ import initiate_weaviate_connection
+
+
+def get_subject(file_name: str, subject_mapping: Dict) -> str:
+    if "." in file_name and len(file_name.split(".")[-1]) <= 4:
+        file_name_components = file_name.split(".")
+        file_name = ".".join(file_name_components[:-1])
+
+    if file_name in subject_mapping:
+        return subject_mapping[file_name]
+    else:
+        return "N/A"
 
 
 load_dotenv()
 
 SEED_DATA_DIR = os.getenv("SEED_DATA_DIR")
 WEAVIATE_URL = os.getenv("WEAVIATE_URL")
+SUBJECT_DICT_TARGET_PATH = os.getenv("SUBJECT_DICT_TARGET_PATH")
+
+subject_mapping: Dict = json.load(open(SUBJECT_DICT_TARGET_PATH))
 
 client = initiate_weaviate_connection(url=WEAVIATE_URL)
 
@@ -40,11 +55,18 @@ with client.batch as batch:
             print("Unsupported file type:", file_name)
             continue
 
+        subject = get_subject(file_name, subject_mapping)
+
         file_path = f"{SEED_DATA_DIR}/{file_name}"
         with open(file_path, "rb") as image_file:
             image = image_file.read()
             base64_image = base64.b64encode(image).decode()
 
-            data = {"image": base64_image, "identifier": file_name}
+            data = {
+                "image": base64_image,
+                "subject": subject,
+                "fileName": file_name,
+                "identifier": file_name,
+            }
 
             batch.add_data_object(data, "Image")

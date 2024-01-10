@@ -7,9 +7,21 @@ import os
 import re
 import requests
 from tqdm import tqdm
+from typing import Dict
 import weaviate
 
 from utils.weaviate_ import initiate_weaviate_connection
+
+
+def get_subject(file_name: str, subject_mapping: Dict) -> str:
+    if "." in file_name and len(file_name.split(".")[-1]) <= 4:
+        file_name_components = file_name.split(".")
+        file_name = ".".join(file_name_components[:-1])
+
+    if file_name in subject_mapping:
+        return subject_mapping[file_name]
+    else:
+        return "N/A"
 
 
 load_dotenv()
@@ -17,6 +29,9 @@ load_dotenv()
 SEED_DATA_URL = os.getenv("SEED_DATA_LIST_URL")
 SEED_DATA_BASE_URL = os.getenv("SEED_DATA_BASE_URL")
 WEAVIATE_URL = os.getenv("WEAVIATE_URL")
+SUBJECT_DICT_TARGET_PATH = os.getenv("SUBJECT_DICT_TARGET_PATH")
+
+subject_mapping: Dict = json.load(open(SUBJECT_DICT_TARGET_PATH))
 
 response = requests.get(url=SEED_DATA_URL)
 directory_listing_html = response.text
@@ -60,7 +75,14 @@ with client.batch as batch:
             image = response.content
             base64_image = base64.b64encode(image).decode()
 
-            data = {"image": base64_image, "identifier": image_id}
+            subject = get_subject(image_id, subject_mapping)
+
+            data = {
+                "image": base64_image,
+                "subject": subject,
+                "fileName": image_id,
+                "identifier": image_id,
+            }
 
             batch.add_data_object(data, "Image")
 
