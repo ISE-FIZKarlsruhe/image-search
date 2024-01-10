@@ -3,18 +3,28 @@
     {
       "class": "Image",
       "description": "Images of various things",
+      "vectorizer": "multi2vec-clip",
       "moduleConfig": {
-        "img2vec-neural": {
+        "multi2vec-clip": {
+          "textFields": [],
           "imageFields": ["image"]
         }
       },
-      "vectorIndexType": "hnsw",
-      "vectorizer": "img2vec-neural",
       "properties": [
         {
           "name": "image",
           "dataType": ["blob"],
-          "description": "image"
+          "description": "the image itself"
+        },
+        {
+          "name": "subject",
+          "dataType": ["text"],
+          "description": "the subject of the corresponding rdf triple"
+        },
+        {
+          "name": "fileName",
+          "dataType": ["text"],
+          "description": "the file name of the image before it was indexed"
         },
         {
           "name": "identifier",
