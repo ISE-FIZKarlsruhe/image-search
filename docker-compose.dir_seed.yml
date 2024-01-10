@@ -17,6 +17,9 @@ services:
     environment:
       WEAVIATE_URL: 'http://weaviate:8080'
       SEED_DATA_DIR: '/index_data'
+      TTL_DATA_DIR: '/ttl_data'
+      SUBJECT_DICT_TARGET_PATH: '/ttl_data/subject_mapping.json'
+
     entrypoint: python3 index_from_directory.py
     volumes:
       - ./.data:/index_data
