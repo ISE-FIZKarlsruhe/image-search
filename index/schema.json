@@ -6,7 +6,6 @@
       "vectorizer": "multi2vec-clip",
       "moduleConfig": {
         "multi2vec-clip": {
-          "textFields": [],
           "imageFields": ["image"]
         }
       },
