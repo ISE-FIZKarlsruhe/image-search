@@ -50,7 +50,7 @@ services:
       - imagesearch
 
   interference-model:
-    image: semitechnologies/multi2vec-clip:sentence-transformers-clip-ViT-B-32-multilingual-v1
+    image: semitechnologies/multi2vec-clip:sentence-transformers-clip-ViT-B-32
     environment:
       ENABLE_CUDA: '0'
     networks:
