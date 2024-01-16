@@ -40,8 +40,8 @@ with open("schema.json") as json_file:
 
 try:
     client.schema.create(schema)
-except weaviate.exceptions.UnexpectedStatusCodeException:
-    pass
+except weaviate.exceptions.UnexpectedStatusCodeException as e:
+    print(str(e))
 
 
 client.batch.configure(
