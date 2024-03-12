@@ -7,6 +7,7 @@ import weaviate
 def initiate_weaviate_connection(url: str, retries: int = 10) -> weaviate.Client:
     try:
         client = weaviate.Client(url=url)
+        print("Successfully connected to weaviate client.")
         return client
     except weaviate.exceptions.WeaviateStartUpError as e:
         print("Connecting to weaviate server failed.")
